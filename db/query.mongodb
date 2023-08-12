@@ -143,6 +143,17 @@ db.createCollection("productos",{
     },
 });
 use("db_bodegas_campus");
+db.productos.insertOne({
+        nombre:"jose",
+        descripcion:"papas de mayonesa",
+        estado: 1,
+        created_by:1,
+        update_by:1,
+        created_at:new Date(2023,10,3),
+        update_at:new Date(2023,11,3),
+        deleted_at:new Date(2023,12,3)
+});
+use("db_bodegas_campus");
 db.createCollection("inventarios",{
     capped: true,
     size: 1900,
@@ -203,6 +214,17 @@ db.createCollection("inventarios",{
     },
 });
 use("db_bodegas_campus");
+db.inventarios.insertOne({
+        id_bodega:1,
+        id_producto:1,
+        cantidad: 1,
+        created_by:1,
+        update_by:1,
+        created_at:new Date(2023,12,3),
+        update_at:new Date(2023,13,3),
+        deleted_at:new Date(2023,14,3)
+});
+use("db_bodegas_campus");
 db.createCollection("historiales",{
     capped: true,
     size: 1900,
@@ -228,7 +250,7 @@ db.createCollection("historiales",{
                 maximum: 20,
                 description: "El campo id_bodega debe ser un número y estar comprendido entre 0 y 20"
             },
-            id_bodega_origen_destino: {
+            id_bodega_destino: {
                 bsonType: "int",
                 minimum: 0,
                 maximum: 20,
@@ -273,6 +295,19 @@ db.createCollection("historiales",{
         },
     },
     },
+});
+use("db_bodegas_campus");
+db.historiales.insertOne({
+        cantidad:1,
+        id_bodega_origen:1,
+        id_bodega_destino:1,
+        id_inventario:1,
+        estado: 1,
+        created_by:1,
+        update_by:1,
+        created_at:new Date(2023,14,3),
+        update_at:new Date(2023,15,3),
+        deleted_at:new Date(2023,16,3)
 });
 use("db_bodegas_campus");
 db.createCollection("bodegas",{
@@ -332,5 +367,16 @@ db.createCollection("bodegas",{
         },
     },
     },
+});
+use("db_bodegas_campus");
+db.bodegas.insertOne({
+        nombre:"Alberto",
+        id_responsable:1,
+        estado: 1,
+        created_by:1,
+        update_by:1,
+        created_at:new Date(2023,16,3),
+        update_at:new Date(2023,17,3),
+        deleted_at:new Date(2023,18,3)
 });
 
