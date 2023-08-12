@@ -1,0 +1,336 @@
+use("db_bodegas_campus");
+db.createCollection("users",{
+    capped: true,
+    size: 1900,
+    max: 5,
+    validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        additionalProperties: false,
+        required: [ "nombre", "email", "email_verified_at", "estado","created_by","update_by","password", "created_at", "update_at", "deleted_at"],
+        properties: {
+            _id:{
+                bsonType: 'objectId',
+            },
+            nombre: {
+                bsonType: "string",
+                pattern: "^[A-Za-z\\s]+$",
+                description: "Debe informar el campo name y este debe ser un string",
+            },
+            email: {
+                bsonType: "string",
+                bsonType: "string",
+                pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
+                description: "Debe informar el campo email y este debe ser un string",
+            },
+            email_verified_at: {
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
+            },
+            estado: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo estado debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            update_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            foto: {
+                bsonType: "string",
+            },
+            password: {
+                bsonType: "string",
+                pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
+                description: "Debe informar el campo password y este debe ser un string",
+            },
+            created_at: {
+                bsonType: "date",
+                description: "Debe informar el campo created_at y este debe ser un dato date",
+            },
+            update_at: {
+                bsonType: "date",
+                description: "Debe informar el campo update_at y este debe ser un dato date",
+            },
+            deleted_at: {
+                bsonType: "date",
+                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+            }
+        },
+    },
+    },
+});
+use("db_bodegas_campus");
+db.users.insertOne({
+        nombre:"jose",
+        email:"cabre920903@gmail.com",
+        email_verified_at: new Date(2023,8,3),
+        estado: 1,
+        created_by:1,
+        update_by:1,
+        foto: "",
+        password:"casa",
+        created_at:new Date(2023,9,3),
+        update_at:new Date(2023,10,3),
+        deleted_at:new Date(2023,11,3)
+});
+use("db_bodegas_campus");
+db.createCollection("productos",{
+    capped: true,
+    size: 1900,
+    max: 5,
+    validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        additionalProperties: false,
+        required: [ "nombre", "descripcion", "estado","created_by","update_by", "created_at", "update_at", "deleted_at"],
+        properties: {
+            _id:{
+                bsonType: 'objectId',
+            },
+            nombre: {
+                bsonType: "string",
+                pattern: "^[A-Za-z\\s]+$",
+                description: "Debe informar el campo name y este debe ser un string",
+            },
+            descripcion: {
+                bsonType: "string",
+                bsonType: "string",
+                pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
+                description: "Debe informar el campo descripcion y este debe ser un string",
+            },
+            estado: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo estado debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            update_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_at: {
+                bsonType: "date",
+                description: "Debe informar el campo created_at y este debe ser un dato date",
+            },
+            update_at: {
+                bsonType: "date",
+                description: "Debe informar el campo update_at y este debe ser un dato date",
+            },
+            deleted_at: {
+                bsonType: "date",
+                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+            }
+        },
+    },
+    },
+});
+use("db_bodegas_campus");
+db.createCollection("inventarios",{
+    capped: true,
+    size: 1900,
+    max: 5,
+    validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        additionalProperties: false,
+        required: [ "id_bodega", "id_producto", "cantidad","created_by","update_by", "created_at", "update_at", "deleted_at"],
+        properties: {
+            _id:{
+                bsonType: 'objectId',
+            },
+            id_bodega: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_bodega debe ser un número y estar comprendido entre 0 y 20"
+            },
+            id_producto: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_producto debe ser un número y estar comprendido entre 0 y 20"
+            },
+            cantidad: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo cantidad debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            update_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_at: {
+                bsonType: "date",
+                description: "Debe informar el campo created_at y este debe ser un dato date",
+            },
+            update_at: {
+                bsonType: "date",
+                description: "Debe informar el campo update_at y este debe ser un dato date",
+            },
+            deleted_at: {
+                bsonType: "date",
+                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+            }
+        },
+    },
+    },
+});
+use("db_bodegas_campus");
+db.createCollection("historiales",{
+    capped: true,
+    size: 1900,
+    max: 5,
+    validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        additionalProperties: false,
+        required: [ "cantidad","id_bodega_origen", "id_bodega_destino", "id_inventario" ,"estado","created_by","update_by", "created_at", "update_at", "deleted_at"],
+        properties: {
+            _id:{
+                bsonType: 'objectId',
+            },
+            cantidad: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo cantidad debe ser un número y estar comprendido entre 0 y 20"
+            },
+            id_bodega_origen: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_bodega debe ser un número y estar comprendido entre 0 y 20"
+            },
+            id_bodega_origen_destino: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_producto debe ser un número y estar comprendido entre 0 y 20"
+            },
+            id_inventario: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_producto debe ser un número y estar comprendido entre 0 y 20"
+            },
+            estado: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo cantidad debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            update_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_at: {
+                bsonType: "date",
+                description: "Debe informar el campo created_at y este debe ser un dato date",
+            },
+            update_at: {
+                bsonType: "date",
+                description: "Debe informar el campo update_at y este debe ser un dato date",
+            },
+            deleted_at: {
+                bsonType: "date",
+                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+            }
+        },
+    },
+    },
+});
+use("db_bodegas_campus");
+db.createCollection("bodegas",{
+    capped: true,
+    size: 1900,
+    max: 5,
+    validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        additionalProperties: false,
+        required: [ "nombre","id_responsable","estado","created_by","update_by", "created_at", "update_at", "deleted_at"],
+        properties: {
+            _id:{
+                bsonType: 'objectId',
+            },
+            nombre: {
+                bsonType: "string",
+                pattern: "^[A-Za-z\\s]+$",
+                description: "Debe informar el campo name y este debe ser un string",
+            },
+            id_responsable: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo id_producto debe ser un número y estar comprendido entre 0 y 20"
+            },
+            estado: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo cantidad debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            update_by: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
+            },
+            created_at: {
+                bsonType: "date",
+                description: "Debe informar el campo created_at y este debe ser un dato date",
+            },
+            update_at: {
+                bsonType: "date",
+                description: "Debe informar el campo update_at y este debe ser un dato date",
+            },
+            deleted_at: {
+                bsonType: "date",
+                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+            }
+        },
+    },
+    },
+});
+
