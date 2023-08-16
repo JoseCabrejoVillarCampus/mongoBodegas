@@ -3,21 +3,45 @@ import { coneccion } from "../db/atlas.js";
 import { limitGet } from '../limit/config.js';
 import { plainToClass } from 'class-transformer';
 import { DTO } from '../limit/token.js';
+import expressQueryBoolean from 'express-query-boolean';
 import {appMiddlewareProductosVerify, appDTODataProductos, appDTOParamProductos} from '../middleware/productosmiddleware.js';
 import { processErrors } from '../common/Function.js';
 import { Productos } from '../dtocontroller/productosdto.js';
+import { ObjectId } from 'mongodb';
 let storageProductos = Router();
 
 let db = await coneccion();
 let productos = db.collection("productos");
 
-storageProductos.get('/:id?', limitGet(), appMiddlewareProductosVerify ,async(req, res)=>{
+storageProductos.use(expressQueryBoolean());
 
-    if(!req.rateLimit) return;
-    let result = (!req.params.id)
-    ? await productos.find({}).toArray()
-    : await productos.find({ "id_responsable": parseInt(req.params.id)}).toArray();
-    res.send(result)
+const getProductosById = (id)=>{
+    return new Promise(async(resolve)=>{
+        const objectId = new ObjectId(id);
+        let result = await productos.find({ "_id": objectId}).toArray();
+        resolve(result);
+    })
+};
+const getProductosAll = ()=>{
+    return new Promise(async(resolve)=>{
+        let result = await productos.find({}).toArray();
+        resolve(result);
+    })
+};
+storageProductos.get("/", limitGet() ,appMiddlewareProductosVerify ,async(req, res)=>{
+    try{
+        const {id} = req.query;
+        if(id){
+            const data = await getProductosById(id);
+            res.send(data)
+        } else {
+            const data = await getProductosAll();
+            res.send(data);
+        }
+    }catch(err){
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 });
 
 storageProductos.post('/', limitGet(), appMiddlewareProductosVerify, appDTODataProductos , async(req, res) => {

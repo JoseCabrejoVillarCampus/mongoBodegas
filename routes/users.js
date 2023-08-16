@@ -3,21 +3,45 @@ import { coneccion } from "../db/atlas.js";
 import { limitGet } from '../limit/config.js';
 import { plainToClass } from 'class-transformer';
 import { DTO } from '../limit/token.js';
+import expressQueryBoolean from 'express-query-boolean';
 import {appMiddlewareUsersVerify, appDTODataUsers, appDTOParamUsers} from '../middleware/usersmiddleware.js';
 import { processErrors } from '../common/Function.js';
 import { Users } from '../dtocontroller/usersdto.js';
+import { ObjectId } from 'mongodb';
 let storageUsers = Router();
 
 let db = await coneccion();
 let users = db.collection("users");
 
-storageUsers.get('/:id?', limitGet(), appMiddlewareUsersVerify ,async(req, res)=>{
+storageUsers.use(expressQueryBoolean());
 
-    if(!req.rateLimit) return;
-    let result = (!req.params.id)
-    ? await users.find({}).toArray()
-    : await users.find({ "id": parseInt(req.params.id)}).toArray();
-    res.send(result)
+const getUsersById = (id)=>{
+    return new Promise(async(resolve)=>{
+        let objectId = new ObjectId(id);
+        let result = await users.find({ "_id": objectId}).toArray();
+        resolve(result);
+    })
+};
+const getUsersAll = ()=>{
+    return new Promise(async(resolve)=>{
+        let result = await users.find({}).toArray();
+        resolve(result);
+    })
+};
+storageUsers.get("/", limitGet() ,appMiddlewareUsersVerify ,async(req, res)=>{
+    try{
+        const {id} = req.query;
+        if(id){
+            const data = await getUsersById(id);
+            res.send(data)
+        } else {
+            const data = await getUsersAll();
+            res.send(data);
+        }
+    }catch(err){
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 });
 
 storageUsers.post('/', limitGet(), appMiddlewareUsersVerify, appDTODataUsers , async(req, res) => {

@@ -3,21 +3,45 @@ import { coneccion } from "../db/atlas.js";
 import { limitGet } from '../limit/config.js';
 import { plainToClass } from 'class-transformer';
 import { DTO } from '../limit/token.js';
+import expressQueryBoolean from 'express-query-boolean';
 import {appMiddlewareHistorialesVerify, appDTODataHistoriales, appDTOParamHistoriales} from '../middleware/historialesmiddleware.js';
 import { processErrors } from '../common/Function.js';
 import { Historiales } from '../dtocontroller/historialesdto.js';
+import { ObjectId } from 'mongodb';
 let storageHistoriales = Router();
 
 let db = await coneccion();
 let historiales = db.collection("historiales");
 
-storageHistoriales.get('/:id?', limitGet(), appMiddlewareHistorialesVerify ,async(req, res)=>{
+storageHistoriales.use(expressQueryBoolean());
 
-    if(!req.rateLimit) return;
-    let result = (!req.params.id)
-    ? await historiales.find({}).toArray()
-    : await historiales.find({ "id_bodega_origen": parseInt(req.params.id)}).toArray();
-    res.send(result)
+const getHistorialesById = (id)=>{
+    return new Promise(async(resolve)=>{
+        const objectId = new ObjectId(id);
+        let result = await historiales.find({ "_id": objectId}).toArray();
+        resolve(result);
+    })
+};
+const getHistorialesAll = ()=>{
+    return new Promise(async(resolve)=>{
+        let result = await historiales.find({}).toArray();
+        resolve(result);
+    })
+};
+storageHistoriales.get("/", limitGet() ,appMiddlewareHistorialesVerify ,async(req, res)=>{
+    try{
+        const {id} = req.query;
+        if(id){
+            const data = await getHistorialesById(id);
+            res.send(data)
+        } else {
+            const data = await getHistorialesAll();
+            res.send(data);
+        }
+    }catch(err){
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 });
 
 storageHistoriales.post('/', limitGet(), appMiddlewareHistorialesVerify, appDTODataHistoriales , async(req, res) => {

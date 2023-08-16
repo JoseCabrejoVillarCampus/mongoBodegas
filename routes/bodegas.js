@@ -3,21 +3,47 @@ import { coneccion } from "../db/atlas.js";
 import { limitGet } from '../limit/config.js';
 import { plainToClass } from 'class-transformer';
 import { DTO } from '../limit/token.js';
-import {appMiddlewareBodegasVerify, appDTODataBodegas, appDTOParamBodegas} from '../middleware/bodegasmiddleware.js';
+import expressQueryBoolean from 'express-query-boolean';
+import { appMiddlewareBodegasVerify, appDTODataBodegas, appDTOParamBodegas } from '../middleware/bodegasmiddleware.js';
 import { processErrors } from '../common/Function.js';
 import { Bodegas } from '../dtocontroller/bodegasdto.js';
+import { ObjectId } from 'mongodb';
 let storageBodegas = Router();
 
 let db = await coneccion();
 let bodegas = db.collection("bodegas");
 
-storageBodegas.get('/:id?', limitGet(), appMiddlewareBodegasVerify ,async(req, res)=>{
+storageBodegas.use(expressQueryBoolean());
 
-    if(!req.rateLimit) return;
-    let result = (!req.params.id)
-    ? await bodegas.find({}).toArray()
-    : await bodegas.find({ "id_responsable": parseInt(req.params.id)}).toArray();
-    res.send(result)
+const getBodegasById = (id) => {
+    return new Promise(async (resolve) => {
+        const objectId = new ObjectId(id); // Crea un nuevo ObjectId a partir de la cadena
+        let result = await bodegas.find({ "_id": objectId }).toArray();
+        resolve(result);
+    });
+};
+
+const getBodegasAll = () => {
+    return new Promise(async (resolve) => {
+        let result = await bodegas.find({}).toArray();
+        resolve(result);
+    });
+};
+
+storageBodegas.get("/", limitGet(), appMiddlewareBodegasVerify, async (req, res) => {
+    try {
+        const { id } = req.query;
+        if (id) {
+            const data = await getBodegasById(id);
+            res.send(data);
+        } else {
+            const data = await getBodegasAll();
+            res.send(data);
+        }
+    } catch (err) {
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 });
 
 storageBodegas.post('/', limitGet(), appMiddlewareBodegasVerify, appDTODataBodegas , async(req, res) => {
