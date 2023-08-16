@@ -19,7 +19,6 @@ db.createCollection("users",{
             },
             email: {
                 bsonType: "string",
-                bsonType: "string",
                 pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
                 description: "Debe informar el campo email y este debe ser un string",
             },

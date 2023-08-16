@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { IsDefined, IsString, Matches } from 'class-validator';
 export class Users {
     constructor(data) {
@@ -15,7 +15,7 @@ export class Users {
         this._id = "";
         this.nombre = "";
         this.email = "";
-        this.email_verified_at = "1991-01-01";
+        this.email_verified_at = "";
         this.estado = 0;
         this.created_by = 0;
         this.update_by = 0;
@@ -30,7 +30,6 @@ __decorate([
     Expose({ name: 'id' })
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
     ,
-    IsDefined({ message: () => { throw { status: 422, message: `El parametro id es obligatorio` }; } }),
     __metadata("design:type", String)
 ], Users.prototype, "_id", void 0);
 __decorate([
@@ -50,9 +49,18 @@ __decorate([
 __decorate([
     Expose({ name: 'fecha_verificacion' })
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
+    // @IsDefined({ message: () => { throw { status: 422, message: `El parametro fecha_verificacion es obligatorio` } } })
     ,
-    IsDefined({ message: () => { throw { status: 422, message: `El parametro fecha_verificacion es obligatorio` }; } }),
-    Matches(/^\d{4}-\d{2}-\d{2$}/, { message: 'Error' }),
+    Transform(({ value }) => {
+        if (value instanceof Date) {
+            return fecha();
+        }
+        else {
+            throw { status: 400, message: `El dato email_verified_at incumple los parámetros acordados` };
+        }
+    }, { toClassOnly: true })
+    /* @Matches(/^\d{4}-\d{2}-\d{2$}/,{message: 'Error'}) */
+    ,
     __metadata("design:type", String)
 ], Users.prototype, "email_verified_at", void 0);
 __decorate([
@@ -117,3 +125,14 @@ __decorate([
     __metadata("design:type", String)
 ], Users.prototype, "deleted_at", void 0);
 ;
+function fecha() {
+    const gota = new Date();
+    const hora = gota.getHours();
+    const minutos = gota.getMinutes();
+    const segundos = gota.getSeconds();
+    let digito = (p1) => (p1 < 10) ? `0${p1}` : p1;
+    let fechaActula = `${gota}T${digito(hora)}:${digito(minutos)}:${digito(segundos)}Z`;
+    const fechaISO8601 = new Date(fechaActula).toISOString();
+    console.log(fechaISO8601, typeof (fechaISO8601));
+    return fechaISO8601;
+}

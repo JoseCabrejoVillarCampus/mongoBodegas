@@ -1,10 +1,9 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsDefined, IsString, Matches } from 'class-validator';
+import { IsDefined, IsString, Matches, isDate } from 'class-validator';
 export class Users {
 
     @Expose({ name: 'id' })
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
-    @IsDefined({ message: () => { throw { status: 422, message: `El parametro id es obligatorio` } } })
     _id: string;
 
     @Expose({ name: 'name' })
@@ -19,8 +18,15 @@ export class Users {
 
     @Expose({ name: 'fecha_verificacion' }) 
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
-    @IsDefined({ message: () => { throw { status: 422, message: `El parametro fecha_verificacion es obligatorio` } } })
-    @Matches(/^\d{4}-\d{2}-\d{2$}/,{message: 'Error'})
+    // @IsDefined({ message: () => { throw { status: 422, message: `El parametro fecha_verificacion es obligatorio` } } })
+    @Transform(({ value }) => {
+        if (value instanceof Date) {
+            return fecha();
+        } else {
+            throw { status: 400, message: `El dato email_verified_at incumple los parámetros acordados` };
+        }
+    }, { toClassOnly: true })
+    /* @Matches(/^\d{4}-\d{2}-\d{2$}/,{message: 'Error'}) */
     email_verified_at: string;
 
     @Expose({ name: 'state' })
@@ -74,11 +80,11 @@ export class Users {
         this._id = "";
         this.nombre = "";
         this.email = "";
-        this.email_verified_at = "1991-01-01";
+        this.email_verified_at = "";
         this.estado = 0 ;
         this.created_by = 0;
         this.update_by = 0;
-        this.foto="";
+        this.foto=""; 
         this.password = "";
         this.created_at = "1991-01-01" ;
         this.update_at = "1991-01-01";
@@ -86,3 +92,15 @@ export class Users {
         
     }
 };
+function fecha():string{
+    const gota = new Date();
+    const hora = gota.getHours();
+    const minutos = gota.getMinutes();
+    const segundos = gota.getSeconds();
+    let digito = (p1:number) => (p1 < 10)? `0${p1}` : p1;
+    let fechaActula = `${gota}T${digito(hora)}:${digito(minutos)}:${digito(segundos)}Z`;
+    const fechaISO8601 = new Date(fechaActula).toISOString();
+    console.log(fechaISO8601, typeof(fechaISO8601));
+    
+    return fechaISO8601;
+}
