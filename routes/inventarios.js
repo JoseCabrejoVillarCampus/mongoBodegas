@@ -57,14 +57,90 @@ storageInventarios.post('/', limitGet(), appMiddlewareInventariosVerify, appDTOD
         res.send(err);
     }
 });
+storageInventarios.post('/registros', limitGet(), appMiddlewareInventariosVerify, appDTODataInventarios , async(req, res) => {
+    if(!req.rateLimit) return;
+    try{
+        // Insertar o actualizar el inventario
+        var nuevoInventario = {
+            id_bodega: req.body.id_bodega,
+            id_producto: req.body.id_producto,
+            cantidad: req.body.cantidad,
+            created_by: 1,
+            update_by: 1,
+            created_at: "2023-08-16",
+            update_at: "2023-08-16",
+            deleted_at: "",
+        };
+        var filtro = {
+            id_bodega: nuevoInventario.id_bodega,
+            id_producto: nuevoInventario.id_producto,
+        };
+        db.inventarios.updateOne(
+            filtro,
+            {
+                $set: {
+                    id_bodega: nuevoInventario.id_bodega,
+                    id_producto: nuevoInventario.id_producto,
+                    update_by: nuevoInventario.update_by,
+                    update_at: nuevoInventario.update_at,
+                    deleted_at: nuevoInventario.deleted_at,
+                },
+                $inc: {
+                    cantidad: nuevoInventario.cantidad,
+                },
+                $setOnInsert: {
+                    created_by: nuevoInventario.created_by,
+                    created_at: nuevoInventario.created_at,
+                },
+            },
+            { upsert: true }
+        );
+
+        res.status(201).send("Inventario actualizado o insertado exitosamente.");
+    } catch (error){
+        const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
+
+        const errorList = processErrors(err, Inventarios);
+
+        res.send(err);
+    }
+});
+
+storageInventarios.post('/cantbodega', limitGet(), appMiddlewareInventariosVerify, appDTODataInventarios , async(req, res) => {
+    if(!req.rateLimit) return;
+    try{
+        let result = await inventarios.insertOne(req.body);
+        const nuevoProductoId = result.insertedId;
+
+        db.inventarios.insertOne({
+            id_bodega: 1, // ID de la bodega predeterminada
+            id_producto: nuevoProductoId,
+            cantidad: 10, // Cantidad predeterminada
+            created_by: 1,
+            update_by: 1,
+            created_at: "2023-08-16",
+            update_at: "2023-08-16",
+            deleted_at: "",
+        });
+
+        res.status(201).send(result);
+    } catch (error){
+        const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
+
+        const errorList = processErrors(err, Inventarios);
+
+        res.send(err);
+    }
+});
+
 storageInventarios.put("/:id?", limitGet(), appMiddlewareInventariosVerify, appDTODataInventarios , appDTOParamInventarios, async(req, res)=>{
     if(!req.rateLimit) return;
     if(!req.params.id){
         res.send({message: "Para realizar el método update es necesario ingresar el id de la bodega cuyo inventario desea modificar."})
     }else{
         try{
-            let result = await inventarios.updateOne(
-                { "id_bodega": parseInt(req.params.id)},
+            const result = await inventarios.updateOne(
+                { "_id": new ObjectId(req.params.id) },
                 { $set: req.body }
             );
             res.send(result)
@@ -79,8 +155,8 @@ storageInventarios.delete("/:id?", limitGet(), appMiddlewareInventariosVerify, a
         res.status(404).send({message: "Para realizar el método delete es necesario ingresar el id de la bodega cuyo inventario desea eliminar."})
     } else {
         try{
-            let result = await inventarios.deleteOne(
-                { "id_bodega": parseInt(req.params.id) }
+            const result = await inventarios.deleteOne(
+                { "_id": new ObjectId(req.params.id) }
             );
             res.status(200).send(result)
         } catch (error){

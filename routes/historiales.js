@@ -63,8 +63,8 @@ storageHistoriales.put("/:id?", limitGet(), appMiddlewareHistorialesVerify, appD
         res.send({message: "Para realizar el método update es necesario ingresar el id de la bodega de origen cuyo historial desea modificar."})
     }else{
         try{
-            let result = await historiales.updateOne(
-                { "id_bodega_origen": parseInt(req.params.id)},
+            const result = await historiales.updateOne(
+                { "_id": new ObjectId(req.params.id) },
                 { $set: req.body }
             );
             res.send(result)
@@ -79,8 +79,8 @@ storageHistoriales.delete("/:id?", limitGet(), appMiddlewareHistorialesVerify, a
         res.status(404).send({message: "Para realizar el método delete es necesario ingresar el id de la bodega de origen cuyo historial desea eliminar."})
     } else {
         try{
-            let result = await historiales.deleteOne(
-                { "id_bodega_origen": parseInt(req.params.id) }
+            const result = await historiales.deleteOne(
+                { "_id": new ObjectId(req.params.id) }
             );
             res.status(200).send(result)
         } catch (error){

@@ -28,6 +28,12 @@ const getProductosAll = ()=>{
         resolve(result);
     })
 };
+const getProductosTotal = ()=>{
+    return new Promise(async(resolve)=>{
+        let result = await productos.find({}).sort({ total: -1 }).toArray();
+        resolve(result);
+    })
+};
 storageProductos.get("/", limitGet() ,appMiddlewareProductosVerify ,async(req, res)=>{
     try{
         const {id} = req.query;
@@ -38,6 +44,15 @@ storageProductos.get("/", limitGet() ,appMiddlewareProductosVerify ,async(req, r
             const data = await getProductosAll();
             res.send(data);
         }
+    }catch(err){
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
+});
+storageProductos.get("/total", limitGet() ,appMiddlewareProductosVerify ,async(req, res)=>{
+    try{
+        const data = await getProductosTotal();
+        res.send(data)
     }catch(err){
         console.error("Ocurrió un error al procesar la solicitud", err.message);
         res.sendStatus(500);
@@ -63,8 +78,8 @@ storageProductos.put("/:id?", limitGet(), appMiddlewareProductosVerify, appDTODa
         res.send({message: "Para realizar el método update es necesario ingresar el id del producto a modificar."})
     }else{
         try{
-            let result = await users.updateOne(
-                { "_id": parseInt(req.params.id)},
+            const result = await productos.updateOne(
+                { "_id": new ObjectId(req.params.id) },
                 { $set: req.body }
             );
             res.send(result)
@@ -79,8 +94,8 @@ storageProductos.delete("/:id?", limitGet(), appMiddlewareProductosVerify, appDT
         res.status(404).send({message: "Para realizar el método delete es necesario ingresar el id del producto a eliminar."})
     } else {
         try{
-            let result = await bodegas.deleteOne(
-                { "_id": parseInt(req.params.id) }
+            const result = await productos.deleteOne(
+                { "_id": new ObjectId(req.params.id) }
             );
             res.status(200).send(result)
         } catch (error){

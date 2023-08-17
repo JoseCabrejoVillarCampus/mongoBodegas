@@ -30,6 +30,13 @@ const getBodegasAll = () => {
     });
 };
 
+const getBodegasAlphabetic = () => {
+    return new Promise(async (resolve) => {
+        let result = await bodegas.find({}).sort({ nombre: 1 }).toArray();
+        resolve(result);
+    });
+};
+
 storageBodegas.get("/", limitGet(), appMiddlewareBodegasVerify, async (req, res) => {
     try {
         const { id } = req.query;
@@ -40,6 +47,16 @@ storageBodegas.get("/", limitGet(), appMiddlewareBodegasVerify, async (req, res)
             const data = await getBodegasAll();
             res.send(data);
         }
+    } catch (err) {
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
+});
+
+storageBodegas.get("/alphabetic", limitGet(), appMiddlewareBodegasVerify, async (req, res) => {
+    try {
+            const data = await getBodegasAlphabetic();
+            res.send(data);
     } catch (err) {
         console.error("Ocurrió un error al procesar la solicitud", err.message);
         res.sendStatus(500);
@@ -65,8 +82,8 @@ storageBodegas.put("/:id?", limitGet(), appMiddlewareBodegasVerify, appDTODataBo
         res.send({message: "Para realizar el método update es necesario ingresar el id de la bodega a modificar."})
     }else{
         try{
-            let result = await bodegas.updateOne(
-                { "id_responsable": parseInt(req.params.id)},
+            const result = await bodegas.updateOne(
+                { "_id": new ObjectId(req.params.id) },
                 { $set: req.body }
             );
             res.send(result)
@@ -81,8 +98,8 @@ storageBodegas.delete("/:id?", limitGet(), appMiddlewareBodegasVerify, appDTOPar
         res.status(404).send({message: "Para realizar el método delete es necesario ingresar el id de la bodega a eliminar."})
     } else {
         try{
-            let result = await bodegas.deleteOne(
-                { "id_responsable": parseInt(req.params.id) }
+            const result = await bodegas.deleteOne(
+                { "_id": new ObjectId(req.params.id) }
             );
             res.status(200).send(result)
         } catch (error){

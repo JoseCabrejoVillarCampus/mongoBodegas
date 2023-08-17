@@ -3,7 +3,7 @@ import { plainToClass, classToPlain } from 'class-transformer';
 import { DTO } from '../limit/token.js';
 import {Parametros} from '../dtocontroller/parametros.js'
 import { Router } from "express";
-import { validate } from 'class-validator';
+import { validate, IsNotEmpty, IsString } from 'class-validator';
 const appMiddlewareUsersVerify = Router();
 const appDTODataUsers = Router();
 const appDTOParamUsers = Router();
@@ -15,8 +15,6 @@ appMiddlewareUsersVerify.use(async(req,res,next) => {
     payload = newPayload;
     let clone = JSON.stringify(classToPlain(plainToClass(DTO("users").class, {}, { ignoreDecorators: true })));
     let verify = clone === JSON.stringify(payload);
-    console.log(payload);
-    console.log(clone);
     req.data= undefined;
     if(!verify) res.status(406).send({status: 406, message: "No Autorizado"})
     next();

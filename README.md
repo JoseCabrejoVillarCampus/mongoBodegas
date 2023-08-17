@@ -156,7 +156,7 @@ El metodo **GET** para todas las tablas es el mismo del endpoint,pero si deseamo
 
 Ejemplo:
 
-*http://${config.hostname}:${config.port}/sucursal/2*
+*http://${config.hostname}:${config.port}/sucursal/64dd705797ed9c6d6755a3c8*
 
 en este caso estamos buscando dentro de la coleccion alquiler, el id especifico 2, que corresponde a nuestro "ID_Sucursal", creado en los esquemeas
 
@@ -195,6 +195,35 @@ EJEMPLO:
 
 <img src="./img/Screenshot from 2023-08-12 10-11-47.png">
 ---
+
+
+## Consultas Especificas
+
+1. EndPoint bodegas ordenadas alfabeticamente
+
+```
+http://127.12.31.03:5016/bodegas/alphabetic
+
+```
+
+2. EndPoint productos por su total
+
+```
+http://127.12.31.03:5016/productos/total
+```
+
+3. EndPoint para agregar productos y que se guarden en inventario con valores de cantidad y bodega por defecto
+
+```
+http://127.12.31.03:5016/inventario/cantbodega
+```
+
+4. EndPoint para agegar registros en la tabla de inventarios. En este caso si la combinación producto-bodega no existe añade un nuevo registro al inventario. Pero si existe actualiza la cantidad.
+
+```
+http://127.12.31.03:5016/inventario/registros
+
+```
 
 # ALGUNOS OPERADORES USADOS
 

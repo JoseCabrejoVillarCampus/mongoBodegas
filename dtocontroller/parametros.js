@@ -8,21 +8,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Expose, Transform } from 'class-transformer';
-import { IsInt } from 'class-validator';
+import { IsString } from 'class-validator';
 export class Parametros {
     constructor(data) {
         Object.assign(this, data);
-        this.id = 1;
+        this.id = "";
     }
 }
 __decorate([
-    IsInt(),
+    IsString(),
     Expose({ name: "id" }),
     Transform(({ value }) => {
-        if (/^[0-9]+$/.test(value))
-            return (value);
+        if (/^[a-z0-9]+$/.test(value))
+            return value;
         else
-            throw { status: 400, message: "el dato del parámetro id ingresado es incorrecto, ingresa un número entero" };
+            throw { status: 400, message: "El dato del parámetro id ingresado es incorrecto, ingresa una cadena de letras minúsculas y/o números" };
     }, { toClassOnly: true }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Parametros.prototype, "id", void 0);

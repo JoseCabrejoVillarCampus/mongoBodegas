@@ -1,4 +1,4 @@
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.createCollection("users",{
     capped: true,
     size: 1900,
@@ -23,7 +23,7 @@ db.createCollection("users",{
                 description: "Debe informar el campo email y este debe ser un string",
             },
             email_verified_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo address y este debe ser un dato date",
             },
             estado: {
@@ -53,36 +53,51 @@ db.createCollection("users",{
                 description: "Debe informar el campo password y este debe ser un string",
             },
             created_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
     },
     },
 });
-use("db_bodegas_campus");
-db.users.insertOne({
+use("db_bodegas_campus2");
+db.users.insertMany([
+    {
         nombre:"jose",
         email:"cabre920903@gmail.com",
-        email_verified_at: new Date(2023,8,3),
+        email_verified_at: "2023-08-03",
         estado: 1,
         created_by:1,
         update_by:1,
         foto: "",
         password:"casa",
-        created_at:new Date(2023,9,3),
-        update_at:new Date(2023,10,3),
-        deleted_at:new Date(2023,11,3)
-});
-use("db_bodegas_campus");
+        created_at:"2023-09-03",
+        update_at:"2023-10-03",
+        deleted_at:"2023-11-03"
+    },
+    {
+        nombre:"carlos",
+        email:"carlos@gmail.com",
+        email_verified_at: "2023-09-03",
+        estado: 2,
+        created_by:2,
+        update_by:2,
+        foto: "",
+        password:"sad",
+        created_at:"2023-10-03",
+        update_at:"2023-11-03",
+        deleted_at:"2023-12-03"
+    },
+]);
+use("db_bodegas_campus2");
 db.createCollection("productos",{
     capped: true,
     size: 1900,
@@ -126,33 +141,45 @@ db.createCollection("productos",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
     },
     },
 });
-use("db_bodegas_campus");
-db.productos.insertOne({
+use("db_bodegas_campus2");
+db.productos.insertMany([
+    {
         nombre:"jose",
         descripcion:"papas de mayonesa",
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:new Date(2023,10,3),
-        update_at:new Date(2023,11,3),
-        deleted_at:new Date(2023,12,3)
-});
-use("db_bodegas_campus");
+        created_at:"2023-10-03",
+        update_at:"2023-10-03",
+        deleted_at:"2023-10-03"
+    },
+    {
+        nombre:"carlos",
+        descripcion:"grande",
+        estado: 2,
+        created_by:2,
+        update_by:2,
+        created_at:"2023-11-03",
+        update_at:"2023-11-03",
+        deleted_at:"2023-11-03"
+    }
+]);
+use("db_bodegas_campus2");
 db.createCollection("inventarios",{
     capped: true,
     size: 1900,
@@ -197,33 +224,33 @@ db.createCollection("inventarios",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
     },
     },
 });
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.inventarios.insertOne({
         id_bodega:1,
         id_producto:1,
         cantidad: 1,
         created_by:1,
         update_by:1,
-        created_at:new Date(2023,12,3),
-        update_at:new Date(2023,13,3),
-        deleted_at:new Date(2023,14,3)
+        created_at:"2023-12-03",
+        update_at:"2023-13-03",
+        deleted_at:"2023-14-03"
 });
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.createCollection("historiales",{
     capped: true,
     size: 1900,
@@ -280,22 +307,22 @@ db.createCollection("historiales",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
     },
     },
 });
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.historiales.insertOne({
         cantidad:1,
         id_bodega_origen:1,
@@ -304,11 +331,11 @@ db.historiales.insertOne({
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:new Date(2023,14,3),
-        update_at:new Date(2023,15,3),
-        deleted_at:new Date(2023,16,3)
+        created_at:"2023-14-03",
+        update_at:"2023-15-03",
+        deleted_at:"2023-16-03"
 });
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.createCollection("bodegas",{
     capped: true,
     size: 1900,
@@ -352,30 +379,99 @@ db.createCollection("bodegas",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "date",
+                bsonType: "string",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
     },
     },
 });
-use("db_bodegas_campus");
+use("db_bodegas_campus2");
 db.bodegas.insertOne({
         nombre:"Alberto",
         id_responsable:1,
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:new Date(2023,16,3),
-        update_at:new Date(2023,17,3),
-        deleted_at:new Date(2023,18,3)
+        created_at:"2023-16-03",
+        update_at:"2023-17-03",
+        deleted_at:"2023-18-03",
 });
+
+/* 
+? Consultas 
+*/
+/* 
+? EndPoint bodegas ordenadas alfabeticamente
+*/
+use("db_bodegas_campus2");
+db.bodegas.find({}).sort({ nombre: 1 });
+/* 
+? EndPoint productos por su total
+*/
+use("db_bodegas_campus2");
+db.productos.find({}).sort({ total: -1 });
+/* 
+? EndPoint para agregar productos y que se guarden en inventario con valores de cantidad y bodega por defecto:
+*/
+use("db_bodegas_campus2");
+db.inventarios.insertOne({
+    id_bodega: 1, // ID de la bodega predeterminada
+    id_producto: nuevoProductoId,
+    cantidad: 10, // Cantidad predeterminada
+    created_by: 1,
+    update_by: 1,
+    created_at: "2023-08-16",
+    update_at: "2023-08-16",
+    deleted_at: "",
+});
+/*  
+? EndPoint para agegar registros en la tabla de inventarios. En este caso si la combinación producto-bodega no existe añade un nuevo registro al inventario. Pero si existe actualiza la cantidad.
+*/
+use("db_bodegas_campus2");
+var nuevoInventario = {
+    id_bodega: 1, // ID de la bodega
+    id_producto: 1, // ID del producto
+    cantidad: 5, // Cantidad a agregar o actualizar
+    created_by: 1,
+    update_by: 1,
+    created_at: "2023-08-16",
+    update_at: "2023-08-16",
+    deleted_at: "",
+};
+var filtro = {
+    id_bodega: nuevoInventario.id_bodega,
+    id_producto: nuevoInventario.id_producto,
+};
+db.inventarios.updateOne(
+    filtro,
+    {
+        $set: {
+            id_bodega: nuevoInventario.id_bodega,
+            id_producto: nuevoInventario.id_producto,
+            update_by: nuevoInventario.update_by,
+            update_at: nuevoInventario.update_at,
+            deleted_at: nuevoInventario.deleted_at,
+        },
+        $inc: {
+            cantidad: nuevoInventario.cantidad,
+        },
+        $setOnInsert: {
+            created_by: nuevoInventario.created_by,
+            created_at: nuevoInventario.created_at,
+        },
+    },
+    { upsert: true }
+);
+/*  
+? Este endPoint permite trasladar un producto de una bodega a otra. Además agregá automaticamente al historial toda la información de la transacción
+*/
 

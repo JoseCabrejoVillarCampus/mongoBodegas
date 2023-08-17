@@ -58,35 +58,37 @@ storageUsers.post('/', limitGet(), appMiddlewareUsersVerify, appDTODataUsers , a
     }
 });
 
-storageUsers.put("/:id?", limitGet(), appMiddlewareUsersVerify, appDTODataUsers , appDTOParamUsers, async(req, res)=>{
-    if(!req.rateLimit) return;
-    if(!req.params.id){
-        res.send({message: "Para realizar el método update es necesario ingresar el id del usuario a modificar."})
-    }else{
-        try{
-            let result = await users.updateOne(
-                { "_id": parseInt(req.params.id)},
+storageUsers.put("/:id?", limitGet(), appMiddlewareUsersVerify, appDTODataUsers, appDTOParamUsers, async(req, res) => {
+    if (!req.rateLimit) return;
+    if (!req.params.id) {
+        res.send({ message: "Para realizar el método update es necesario ingresar el id del usuario a modificar." });
+    } else {
+        try {
+            const result = await users.updateOne(
+                { "_id": new ObjectId(req.params.id) },
                 { $set: req.body }
             );
-            res.send(result)
-        } catch (error){
-            res.status(422).send(error)
+            res.send(result);
+        } catch (error) {
+            res.status(422).send(error);
         }
     }
 });
-storageUsers.delete("/:id?", limitGet(), appMiddlewareUsersVerify, appDTOParamUsers, async(req, res)=>{
-    if(!req.rateLimit) return;
-    if(!req.params.id){
-        res.status(404).send({message: "Para realizar el método delete es necesario ingresar el id del usuario a eliminar."})
+
+storageUsers.delete("/:id?", limitGet(), appMiddlewareUsersVerify, appDTOParamUsers, async(req, res) => {
+    if (!req.rateLimit) return;
+    if (!req.params.id) {
+        res.status(404).send({ message: "Para realizar el método delete es necesario ingresar el id del usuario a eliminar." });
     } else {
-        try{
-            let result = await users.deleteOne(
-                { "_id": parseInt(req.params.id) }
+        try {
+            const result = await users.deleteOne(
+                { "_id": new ObjectId(req.params.id) }
             );
-            res.status(200).send(result)
-        } catch (error){
-            res.status(422).send(error)
+            res.status(200).send(result);
+        } catch (error) {
+            res.status(422).send(error);
         }
     }
-}); 
+});
+
 export default storageUsers;
