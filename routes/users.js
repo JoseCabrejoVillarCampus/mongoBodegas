@@ -18,13 +18,54 @@ storageUsers.use(expressQueryBoolean());
 const getUsersById = (id)=>{
     return new Promise(async(resolve)=>{
         let objectId = new ObjectId(id);
-        let result = await users.find({ "_id": objectId}).toArray();
+        let result = await users.aggregate([
+            {
+                $match:{
+                    _id: objectId 
+                }
+            },
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "correElectronico":"$email",
+                    "fecha_verificacion":"$email_verified_at",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "imagen":"$foto",
+                    "accesscode":"$password",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };
 const getUsersAll = ()=>{
     return new Promise(async(resolve)=>{
-        let result = await users.find({}).toArray();
+        let result = await users.aggregate([
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "correElectronico":"$email",
+                    "fecha_verificacion":"$email_verified_at",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "imagen":"$foto",
+                    "accesscode":"$password",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };

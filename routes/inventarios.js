@@ -18,13 +18,48 @@ storageInventarios.use(expressQueryBoolean());
 const getInventariosById = (id)=>{
     return new Promise(async(resolve)=>{
         const objectId = new ObjectId(id);
-        let result = await inventarios.find({ "_id": objectId}).toArray();
+        let result = await inventarios.aggregate([
+            {
+                $match:{
+                    _id: objectId 
+                }
+            },
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "storeID":"$id_bodega",
+                    "productID":"$id_producto",
+                    "amount":"$cantidad",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };
 const getInventariosAll = ()=>{
     return new Promise(async(resolve)=>{
-        let result = await inventarios.find({}).toArray();
+        let result = await inventarios.aggregate([
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "storeID":"$id_bodega",
+                    "productID":"$id_producto",
+                    "amount":"$cantidad",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };

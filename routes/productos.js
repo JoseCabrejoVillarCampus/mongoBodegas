@@ -18,13 +18,48 @@ storageProductos.use(expressQueryBoolean());
 const getProductosById = (id)=>{
     return new Promise(async(resolve)=>{
         const objectId = new ObjectId(id);
-        let result = await productos.find({ "_id": objectId}).toArray();
+        let result = await productos.aggregate([
+            {
+                $match:{
+                    _id: objectId 
+                }
+            },
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "about":"$descripcion",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };
 const getProductosAll = ()=>{
     return new Promise(async(resolve)=>{
-        let result = await productos.find({}).toArray();
+        let result = await productos.aggregate([
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "about":"$descripcion",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };

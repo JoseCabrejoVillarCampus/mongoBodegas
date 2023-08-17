@@ -17,15 +17,50 @@ storageBodegas.use(expressQueryBoolean());
 
 const getBodegasById = (id) => {
     return new Promise(async (resolve) => {
-        const objectId = new ObjectId(id); // Crea un nuevo ObjectId a partir de la cadena
-        let result = await bodegas.find({ "_id": objectId }).toArray();
+        const objectId = new ObjectId(id); 
+        let result = await bodegas.aggregate([
+            {
+                $match:{
+                    _id: objectId 
+                }
+            },
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "responsibleID":"$id_responsable",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     });
 };
 
 const getBodegasAll = () => {
     return new Promise(async (resolve) => {
-        let result = await bodegas.find({}).toArray();
+        let result = await bodegas.aggregate([
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "name":"$nombre",
+                    "responsibleID":"$id_responsable",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     });
 };

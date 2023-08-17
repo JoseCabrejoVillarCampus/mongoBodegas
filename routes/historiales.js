@@ -18,13 +18,52 @@ storageHistoriales.use(expressQueryBoolean());
 const getHistorialesById = (id)=>{
     return new Promise(async(resolve)=>{
         const objectId = new ObjectId(id);
-        let result = await historiales.find({ "_id": objectId}).toArray();
+        let result = await historiales.aggregate([
+            {
+                $match:{
+                    _id: objectId 
+                }
+            },
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "amount":"$cantidad",
+                    "originStoreId":"$id_bodega_origen",
+                    "destinationStoreId":"$id_bodega_destino",
+                    "inventoryId":"$id_inventario",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };
 const getHistorialesAll = ()=>{
     return new Promise(async(resolve)=>{
-        let result = await historiales.find({}).toArray();
+        let result = await historiales.aggregate([
+            {
+                $project:{
+                    "_id":0,
+                    "id" :"$_id",
+                    "amount":"$cantidad",
+                    "originStoreId":"$id_bodega_origen",
+                    "destinationStoreId":"$id_bodega_destino",
+                    "inventoryId":"$id_inventario",
+                    "state":"$estado",
+                    "userCreator":"$created_by",
+                    "userUpdater":"$update_by",
+                    "creationDate":"$created_at",
+                    "updateDate":"$update_at",
+                    "deleteDate":"$deleted_at"
+                }
+            }
+        ]).toArray();
         resolve(result);
     })
 };
