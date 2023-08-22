@@ -23,14 +23,13 @@ db.createCollection("users",{
                 description: "Debe informar el campo email y este debe ser un string",
             },
             email_verified_at: {
-                bsonType: "string",
+                bsonType: "date",
                 description: "Debe informar el campo address y este debe ser un dato date",
             },
             estado: {
-                bsonType: "int",
-                minimum: 0,
-                maximum: 20,
-                description: "El campo estado debe ser un número y estar comprendido entre 0 y 20"
+                bsonType: "string",
+                pattern: "^[A-Za-z\\s]+$",
+                description: "Debe informar el campo name y este debe ser un string",
             },
             created_by: {
                 bsonType: "int",
@@ -53,15 +52,15 @@ db.createCollection("users",{
                 description: "Debe informar el campo password y este debe ser un string",
             },
             created_at: {
-                bsonType: "string",
+                bsonType: "date",
                 description: "Debe informar el campo created_at y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "string",
+                bsonType: "date",
                 description: "Debe informar el campo update_at y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "string",
+                bsonType: "date",
                 description: "Debe informar el campo deleted_at y este debe ser un dato date",
             }
         },
@@ -73,28 +72,28 @@ db.users.insertMany([
     {
         nombre:"jose",
         email:"cabre920903@gmail.com",
-        email_verified_at: "2023-08-03",
+        email_verified_at: new Date(2023,8,3),
         estado: 1,
         created_by:1,
         update_by:1,
         foto: "",
         password:"casa",
-        created_at:"2023-09-03",
-        update_at:"2023-10-03",
-        deleted_at:"2023-11-03"
+        created_at:new Date(2023,9,3),
+        update_at:new Date(2023,10,3),
+        deleted_at:new Date(2023,11,3)
     },
     {
         nombre:"carlos",
         email:"carlos@gmail.com",
-        email_verified_at: "2023-09-03",
+        email_verified_at: new Date(2023,9,3),
         estado: 2,
         created_by:2,
         update_by:2,
         foto: "",
         password:"sad",
-        created_at:"2023-10-03",
-        update_at:"2023-11-03",
-        deleted_at:"2023-12-03"
+        created_at:new Date(2023,10,3),
+        update_at:new Date(2023,11,3),
+        deleted_at:new Date(2023,12,3)
     },
 ]);
 use("db_bodegas_campus2");
@@ -141,16 +140,16 @@ db.createCollection("productos",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "string",
-                description: "Debe informar el campo created_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "string",
-                description: "Debe informar el campo update_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "string",
-                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             }
         },
     },
@@ -164,9 +163,9 @@ db.productos.insertMany([
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:"2023-10-03",
-        update_at:"2023-10-03",
-        deleted_at:"2023-10-03"
+        created_at:new Date(2023,10,3),
+        update_at:new Date(2023,10,3),
+        deleted_at:new Date(2023,10,3)
     },
     {
         nombre:"carlos",
@@ -174,9 +173,9 @@ db.productos.insertMany([
         estado: 2,
         created_by:2,
         update_by:2,
-        created_at:"2023-11-03",
-        update_at:"2023-11-03",
-        deleted_at:"2023-11-03"
+        created_at:new Date(2023,11,3),
+        update_at:new Date(2023,11,3),
+        deleted_at:new Date(2023,11,3)
     }
 ]);
 use("db_bodegas_campus2");
@@ -224,16 +223,16 @@ db.createCollection("inventarios",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "string",
-                description: "Debe informar el campo created_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "string",
-                description: "Debe informar el campo update_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "string",
-                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             }
         },
     },
@@ -246,9 +245,9 @@ db.inventarios.insertOne({
         cantidad: 1,
         created_by:1,
         update_by:1,
-        created_at:"2023-12-03",
-        update_at:"2023-13-03",
-        deleted_at:"2023-14-03"
+        created_at:new Date(2023,12,3),
+        update_at:new Date(2023,13,3),
+        deleted_at:new Date(2023,14,3)
 });
 use("db_bodegas_campus2");
 db.createCollection("historiales",{
@@ -307,16 +306,16 @@ db.createCollection("historiales",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "string",
-                description: "Debe informar el campo created_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "string",
-                description: "Debe informar el campo update_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "string",
-                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             }
         },
     },
@@ -331,9 +330,9 @@ db.historiales.insertOne({
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:"2023-14-03",
-        update_at:"2023-15-03",
-        deleted_at:"2023-16-03"
+        created_at:new Date(2023,14,3),
+        update_at:new Date(2023,15,3),
+        deleted_at:new Date(2023,16,3)
 });
 use("db_bodegas_campus2");
 db.createCollection("bodegas",{
@@ -379,16 +378,16 @@ db.createCollection("bodegas",{
                 description: "El campo update_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_at: {
-                bsonType: "string",
-                description: "Debe informar el campo created_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             update_at: {
-                bsonType: "string",
-                description: "Debe informar el campo update_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             },
             deleted_at: {
-                bsonType: "string",
-                description: "Debe informar el campo deleted_at y este debe ser un dato date",
+                bsonType: "date",
+                description: "Debe informar el campo address y este debe ser un dato date",
             }
         },
     },
@@ -401,9 +400,9 @@ db.bodegas.insertOne({
         estado: 1,
         created_by:1,
         update_by:1,
-        created_at:"2023-16-03",
-        update_at:"2023-17-03",
-        deleted_at:"2023-18-03",
+        created_at:new Date(2023,16,3),
+        update_at:new Date(2023,17,3),
+        deleted_at:new Date(2023,18,3),
 });
 
 /* 

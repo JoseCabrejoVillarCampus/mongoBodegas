@@ -11,12 +11,15 @@ const appDTOParamUsers = Router();
 appMiddlewareUsersVerify.use(async(req,res,next) => {
     if(!req.rateLimit) return;
     let {payload} = req.data;
+    console.log(req.data);
     const{ iat, exp, ...newPayload } = payload;
     payload = newPayload;
+    console.log(payload);
     let clone = JSON.stringify(classToPlain(plainToClass(DTO("users").class, {}, { ignoreDecorators: true })));
     let verify = clone === JSON.stringify(payload);
+    console.log(clone);
     req.data= undefined;
-    if(!verify) res.status(406).send({status: 406, message: "No Autorizado"})
+    if(!verify) return res.status(406).send({status: 406, message: "No Autorizado"})
     next();
 });
 appDTODataUsers.use( async(req,res,next)=>{

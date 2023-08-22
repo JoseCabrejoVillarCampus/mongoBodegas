@@ -96,8 +96,9 @@ storageProductos.get("/total", limitGet() ,appMiddlewareProductosVerify ,async(r
 
 storageProductos.post('/', limitGet(), appMiddlewareProductosVerify, appDTODataProductos , async(req, res) => {
     if(!req.rateLimit) return;
+    let data = {...req.body, created_at: new Date(req.body.created_at), update_at: new Date(req.body.update_at), deleted_at: new Date(req.body.deleted_at)}
     try{
-        let result = await productos.insertOne(req.body);
+        let result = await productos.insertOne(data);
         res.status(201).send(result);
     } catch (error){
         const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
@@ -108,19 +109,28 @@ storageProductos.post('/', limitGet(), appMiddlewareProductosVerify, appDTODataP
     }
 });
 storageProductos.put("/:id?", limitGet(), appMiddlewareProductosVerify, appDTODataProductos , appDTOParamProductos, async(req, res)=>{
-    if(!req.rateLimit) return;
-    if(!req.params.id){
-        res.send({message: "Para realizar el método update es necesario ingresar el id del producto a modificar."})
-    }else{
-        try{
-            const result = await productos.updateOne(
-                { "_id": new ObjectId(req.params.id) },
-                { $set: req.body }
-            );
-            res.send(result)
-        } catch (error){
-            res.status(422).send(error)
+    try {
+        if (!req.rateLimit) {
+            throw new Error("Rate limit not satisfied.");
         }
+        const parsedDates = ['created_at', 'update_at', 'deleted_at'];
+        const data = { ...req.body };
+        for (const dateField of parsedDates) {
+            if (data[dateField]) {
+                data[dateField] = new Date(data[dateField]);
+            }
+        }
+        if (!req.params.id) {
+            return res.status(400).send({ message: "Para realizar el método update es necesario ingresar el id del usuario a modificar." });
+        }
+        const result = await productos.updateOne(
+            { "_id": new ObjectId(req.params.id) },
+            { $set: data }
+        );
+        res.send(result);
+    } catch (error) {
+        console.error("An error occurred:", error);
+        res.status(500).send({ message: "Error inesperado en el servidor." });
     }
 });
 storageProductos.delete("/:id?", limitGet(), appMiddlewareProductosVerify, appDTOParamProductos, async(req, res)=>{

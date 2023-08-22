@@ -30,6 +30,7 @@ const DTO = (p1) => {
 appToken.use('/:collection' ,async(req,res)=>{
     try {
         let inst = DTO(req.params.collection).atributos;
+        console.log(inst);
         const encoder = new TextEncoder();
         const jwtconstructor = new SignJWT(Object.assign({},  classToPlain(inst)));
         const jwt = await jwtconstructor

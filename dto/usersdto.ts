@@ -81,7 +81,7 @@ export class Users {
         this.update_by = 0;
         this.foto=""; 
         this.password = "";
-        this.created_at = "1991-01-01" ;
+        this.created_at = "1991-01-01";
         this.update_at = "1991-01-01";
         this.deleted_at = "1991-01-01";
         
