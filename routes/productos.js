@@ -65,7 +65,34 @@ const getProductosAll = ()=>{
 };
 const getProductosTotal = ()=>{
     return new Promise(async(resolve)=>{
-        let result = await productos.find({}).sort({ total: -1 }).toArray();
+        let result = await productos.aggregate([
+            {
+                $lookup: {
+                    from: "inventarios",
+                    localField: "_id",
+                    foreignField: "id_producto",
+                    as: "inventory"
+                }
+            },
+            {
+                $unwind: "$inventory"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    Total: { $sum: "$inventory.cantidad" },
+                    producto: { $first: "$$ROOT" }
+                }
+            },
+            {    
+                $project: {     
+                    "producto.inventory": 0
+                } 
+            },
+            {
+                $sort: { Total: -1 }
+            }
+        ]).toArray();
         resolve(result);
     })
 };

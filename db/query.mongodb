@@ -1,7 +1,7 @@
 use("db_bodegas_campus2");
 db.createCollection("users",{
     capped: true,
-    size: 1900,
+    size: 10000,
     max: 5,
     validator: {
     $jsonSchema: {
@@ -27,9 +27,10 @@ db.createCollection("users",{
                 description: "Debe informar el campo address y este debe ser un dato date",
             },
             estado: {
-                bsonType: "string",
-                pattern: "^[A-Za-z\\s]+$",
-                description: "Debe informar el campo name y este debe ser un string",
+                bsonType: "int",
+                minimum: 0,
+                maximum: 20,
+                description: "El campo created_by debe ser un número y estar comprendido entre 0 y 20"
             },
             created_by: {
                 bsonType: "int",
@@ -95,11 +96,50 @@ db.users.insertMany([
         update_at:new Date(2023,11,3),
         deleted_at:new Date(2023,12,3)
     },
+    {
+        nombre:"raul",
+        email:"raul@gmail.com",
+        email_verified_at: new Date(2023,9,3),
+        estado: 3,
+        created_by:3,
+        update_by:3,
+        foto: "",
+        password:"laika",
+        created_at:new Date(2023,9,3),
+        update_at:new Date(2023,10,3),
+        deleted_at:new Date(2023,11,3)
+    },
+    {
+        nombre:"betty",
+        email:"betty@gmail.com",
+        email_verified_at: new Date(2023,22,3),
+        estado: 4,
+        created_by:4,
+        update_by:4,
+        foto: "",
+        password:"lolos",
+        created_at:new Date(2023,22,3),
+        update_at:new Date(2023,23,3),
+        deleted_at:new Date(2023,30,3)
+    },
+    {
+        nombre:"lore",
+        email:"lore920903@gmail.com",
+        email_verified_at: new Date(2023,2,3),
+        estado: 5,
+        created_by:5,
+        update_by:5,
+        foto: "",
+        password:"werd",
+        created_at:new Date(2023,3,3),
+        update_at:new Date(2023,21,3),
+        deleted_at:new Date(2023,31,3)
+    }
 ]);
 use("db_bodegas_campus2");
 db.createCollection("productos",{
     capped: true,
-    size: 1900,
+    size: 10000,
     max: 5,
     validator: {
     $jsonSchema: {
@@ -112,11 +152,10 @@ db.createCollection("productos",{
             },
             nombre: {
                 bsonType: "string",
-                pattern: "^[A-Za-z\\s]+$",
+                pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
                 description: "Debe informar el campo name y este debe ser un string",
             },
             descripcion: {
-                bsonType: "string",
                 bsonType: "string",
                 pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
                 description: "Debe informar el campo descripcion y este debe ser un string",
@@ -158,8 +197,8 @@ db.createCollection("productos",{
 use("db_bodegas_campus2");
 db.productos.insertMany([
     {
-        nombre:"jose",
-        descripcion:"papas de mayonesa",
+        nombre:"producto1",
+        descripcion:"productosvarios1",
         estado: 1,
         created_by:1,
         update_by:1,
@@ -168,14 +207,44 @@ db.productos.insertMany([
         deleted_at:new Date(2023,10,3)
     },
     {
-        nombre:"carlos",
-        descripcion:"grande",
+        nombre:"producto2",
+        descripcion:"productosvarios2",
         estado: 2,
         created_by:2,
         update_by:2,
         created_at:new Date(2023,11,3),
         update_at:new Date(2023,11,3),
         deleted_at:new Date(2023,11,3)
+    },
+    {
+        nombre:"producto3",
+        descripcion:"productosvarios3",
+        estado: 3,
+        created_by:3,
+        update_by:3,
+        created_at:new Date(2023,12,3),
+        update_at:new Date(2023,12,3),
+        deleted_at:new Date(2023,12,3)
+    },
+    {
+        nombre:"producto4",
+        descripcion:"productosvarios4",
+        estado: 4,
+        created_by:4,
+        update_by:4,
+        created_at:new Date(2023,14,3),
+        update_at:new Date(2023,14,3),
+        deleted_at:new Date(2023,14,3)
+    },
+    {
+        nombre:"producto5",
+        descripcion:"productosvarios5",
+        estado: 5,
+        created_by:5,
+        update_by:5,
+        created_at:new Date(2023,15,3),
+        update_at:new Date(2023,15,3),
+        deleted_at:new Date(2023,15,3)
     }
 ]);
 use("db_bodegas_campus2");
@@ -239,7 +308,8 @@ db.createCollection("inventarios",{
     },
 });
 use("db_bodegas_campus2");
-db.inventarios.insertOne({
+db.inventarios.insertMany([
+    {
         id_bodega:1,
         id_producto:1,
         cantidad: 1,
@@ -248,11 +318,52 @@ db.inventarios.insertOne({
         created_at:new Date(2023,12,3),
         update_at:new Date(2023,13,3),
         deleted_at:new Date(2023,14,3)
-});
+    },
+    {
+        id_bodega:2,
+        id_producto:2,
+        cantidad: 2,
+        created_by:2,
+        update_by:2,
+        created_at:new Date(2023,13,3),
+        update_at:new Date(2023,14,3),
+        deleted_at:new Date(2023,15,3)
+    },
+    {
+        id_bodega:3,
+        id_producto:3,
+        cantidad: 3,
+        created_by:3,
+        update_by:3,
+        created_at:new Date(2023,14,3),
+        update_at:new Date(2023,15,3),
+        deleted_at:new Date(2023,16,3)
+    },
+    {
+        id_bodega:4,
+        id_producto:4,
+        cantidad: 4,
+        created_by:4,
+        update_by:4,
+        created_at:new Date(2023,17,3),
+        update_at:new Date(2023,18,3),
+        deleted_at:new Date(2023,19,3)
+    },
+    {
+        id_bodega:5,
+        id_producto:5,
+        cantidad: 5,
+        created_by:5,
+        update_by:5,
+        created_at:new Date(2023,20,3),
+        update_at:new Date(2023,21,3),
+        deleted_at:new Date(2023,22,3)
+    },
+]);
 use("db_bodegas_campus2");
 db.createCollection("historiales",{
     capped: true,
-    size: 1900,
+    size: 15000,
     max: 5,
     validator: {
     $jsonSchema: {
@@ -322,18 +433,67 @@ db.createCollection("historiales",{
     },
 });
 use("db_bodegas_campus2");
-db.historiales.insertOne({
-        cantidad:1,
-        id_bodega_origen:1,
-        id_bodega_destino:1,
-        id_inventario:1,
-        estado: 1,
-        created_by:1,
-        update_by:1,
-        created_at:new Date(2023,14,3),
-        update_at:new Date(2023,15,3),
-        deleted_at:new Date(2023,16,3)
-});
+db.historiales.insertMany([
+    {
+        cantidad: 20,
+        id_bodega_origen: 5,
+        id_bodega_destino: 3,
+        id_inventario: 1,
+        estado:1,
+        created_by: 1,
+        update_by: 2,
+        created_at: new Date(2022,6,2),
+        update_at: new Date(2022,6,2),
+        deleted_at: new Date(2022,6,2)
+    },
+    {
+        cantidad: 2,
+        id_bodega_origen: 5,
+        id_bodega_destino: 8,
+        id_inventario: 2,
+        estado:2,
+        created_by: 2,
+        update_by: 2,
+        created_at: new Date(2022,6,3),
+        update_at: new Date(2022,6,3),
+        deleted_at: new Date(2022,6,3)
+    },
+    {
+        cantidad: 2,
+        id_bodega_origen: 2,
+        id_bodega_destino: 15,
+        id_inventario: 3,
+        estado:3,
+        created_by: 3,
+        update_by: 3,
+        created_at: new Date(2022,6,4),
+        update_at: new Date(2022,6,4),
+        deleted_at: new Date(2022,6,4)
+    },
+    {
+        cantidad: 2,
+        id_bodega_origen: 12,
+        id_bodega_destino: 9,
+        id_inventario: 4,
+        estado:4,
+        created_by: 4,
+        update_by: 4,
+        created_at: new Date(2022,6,5),
+        update_at: new Date(2022,6,5),
+        deleted_at: new Date(2022,6,5)
+    },
+    {
+        cantidad: 2,
+        id_bodega_origen: 7,
+        id_bodega_destino: 6,
+        id_inventario: 5,
+        estado:5,
+        created_by: 5,
+        update_by: 5,
+        created_at: new Date(2022,6,6),
+        update_at: new Date(2022,6,6),
+        deleted_at: new Date(2022,6,6)
+    }]);
 use("db_bodegas_campus2");
 db.createCollection("bodegas",{
     capped: true,
@@ -350,7 +510,7 @@ db.createCollection("bodegas",{
             },
             nombre: {
                 bsonType: "string",
-                pattern: "^[A-Za-z\\s]+$",
+                pattern: "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ,.#@\\s-]+$",
                 description: "Debe informar el campo name y este debe ser un string",
             },
             id_responsable: {
@@ -394,8 +554,9 @@ db.createCollection("bodegas",{
     },
 });
 use("db_bodegas_campus2");
-db.bodegas.insertOne({
-        nombre:"Alberto",
+db.bodegas.insertMany([
+    {
+        nombre:"Bodega1",
         id_responsable:1,
         estado: 1,
         created_by:1,
@@ -403,7 +564,48 @@ db.bodegas.insertOne({
         created_at:new Date(2023,16,3),
         update_at:new Date(2023,17,3),
         deleted_at:new Date(2023,18,3),
-});
+    },
+    {
+        nombre:"Bodega2",
+        id_responsable:2,
+        estado: 2,
+        created_by:2,
+        update_by:2,
+        created_at:new Date(2023,17,3),
+        update_at:new Date(2023,18,3),
+        deleted_at:new Date(2023,19,3),
+    },
+    {
+        nombre:"Bodega3",
+        id_responsable:3,
+        estado: 3,
+        created_by:3,
+        update_by:3,
+        created_at:new Date(2023,20,3),
+        update_at:new Date(2023,21,3),
+        deleted_at:new Date(2023,22,3),
+    },
+    {
+        nombre:"Bodega4",
+        id_responsable:4,
+        estado: 4,
+        created_by:4,
+        update_by:4,
+        created_at:new Date(2023,23,3),
+        update_at:new Date(2023,24,3),
+        deleted_at:new Date(2023,25,3),
+    },
+    {
+        nombre:"Bodega5",
+        id_responsable:5,
+        estado: 5,
+        created_by:5,
+        update_by:5,
+        created_at:new Date(2023,26,3),
+        update_at:new Date(2023,27,3),
+        deleted_at:new Date(2023,28,3),
+    }
+]);
 
 /* 
 ? Consultas 
@@ -417,7 +619,42 @@ db.bodegas.find({}).sort({ nombre: 1 });
 ? EndPoint productos por su total
 */
 use("db_bodegas_campus2");
-db.productos.find({}).sort({ total: -1 });
+db.productos.aggregate([
+    {
+        $lookup: {
+            from: "inventarios",
+            localField: "_id",
+            foreignField: "id_producto",
+            as: "inventory"
+        }
+    },
+    {
+        $unwind: "$inventory"
+    },
+    {
+        $group: {
+            _id: "$_id",
+            Total: { $sum: "$inventory.cantidad" },
+            producto: { $first: "$$ROOT" }
+        }
+    },
+    {    
+        $project: {     
+            "producto.inventory": 0
+        } 
+    },
+    {
+        $match: {
+            Total: { $gt: 1 } // Filtra productos con una cantidad total de inventario mayor a 1
+        }
+    },
+    {
+        $sort: { Total: -1 }
+    }
+]);
+
+
+
 /* 
 ? EndPoint para agregar productos y que se guarden en inventario con valores de cantidad y bodega por defecto:
 */
