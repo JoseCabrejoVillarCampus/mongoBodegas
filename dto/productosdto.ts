@@ -2,6 +2,12 @@ import { Expose, Transform } from 'class-transformer';
 import { IsDefined, IsString, Matches } from 'class-validator';
 export class Productos {
 
+
+    @Expose({ name: 'codigoProducto' })
+    // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
+    @IsDefined({ message: () => { throw { status: 422, message: `El parametro codigoProducto es obligatorio` } } })
+    idProducto: number;
+
     @Expose({ name: 'name' })
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
     @IsDefined({ message: () => { throw { status: 422, message: `El parametro name es obligatorio` } } })
@@ -50,6 +56,7 @@ export class Productos {
 
     constructor(data: Partial<Productos>) {
         Object.assign(this, data);
+        this.idProducto=0;
         this.nombre = "";
         this.descripcion = "";
         this.estado = 0 ;

@@ -6,6 +6,7 @@ import {Bodegas} from '../dtocontroller/bodegasdto.js';
 import {Productos} from '../dtocontroller/productosdto.js';
 import {Inventarios} from '../dtocontroller/inventariosdto.js';
 import {Historiales} from '../dtocontroller/historialesdto.js';
+import { Registro } from '../dtocontroller/registrodto.js';
 import {Router} from 'express';
 import { SignJWT, jwtVerify } from 'jose';
 
@@ -20,6 +21,7 @@ const DTO = (p1) => {
         'productos': Productos,
         'inventarios': Inventarios,
         'historiales': Historiales,
+        'registro':Registro,
         'mongo': Error
     };
     const inst = match[p1];

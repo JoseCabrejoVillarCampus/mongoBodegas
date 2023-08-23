@@ -12,6 +12,7 @@ import { IsDefined, IsString, Matches } from 'class-validator';
 export class Productos {
     constructor(data) {
         Object.assign(this, data);
+        this.idProducto = 0;
         this.nombre = "";
         this.descripcion = "";
         this.estado = 0;
@@ -22,6 +23,13 @@ export class Productos {
         this.deleted_at = "1991-01-01";
     }
 }
+__decorate([
+    Expose({ name: 'codigoProducto' })
+    // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})
+    ,
+    IsDefined({ message: () => { throw { status: 422, message: `El parametro codigoProducto es obligatorio` }; } }),
+    __metadata("design:type", Number)
+], Productos.prototype, "idProducto", void 0);
 __decorate([
     Expose({ name: 'name' })
     // @IsNumber({}, { message: () => { throw { status: 422, message: `El cedula_usuario no cumple con el formato, debe ser un numero`}}})

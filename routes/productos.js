@@ -28,6 +28,7 @@ const getProductosById = (id)=>{
                 $project:{
                     "_id":0,
                     "id" :"$_id",
+                    "codigoProducto":"$idProducto",
                     "name":"$nombre",
                     "about":"$descripcion",
                     "state":"$estado",
@@ -49,6 +50,7 @@ const getProductosAll = ()=>{
                 $project:{
                     "_id":0,
                     "id" :"$_id",
+                    "codigoProducto":"$idProducto",
                     "name":"$nombre",
                     "about":"$descripcion",
                     "state":"$estado",
@@ -67,32 +69,28 @@ const getProductosTotal = ()=>{
     return new Promise(async(resolve)=>{
         let result = await productos.aggregate([
             {
-                $lookup: {
-                    from: "inventarios",
-                    localField: "_id",
-                    foreignField: "id_producto",
-                    as: "inventory"
-                }
+              $lookup: {
+                from: "inventarios",
+                localField: "idProducto",
+                foreignField: "id_producto",
+                as: "inventory"
+              }
             },
             {
-                $unwind: "$inventory"
+              $unwind: "$inventory"
             },
             {
-                $group: {
-                    _id: "$_id",
-                    Total: { $sum: "$inventory.cantidad" },
-                    producto: { $first: "$$ROOT" }
-                }
-            },
-            {    
-                $project: {     
-                    "producto.inventory": 0
-                } 
+              $group: {
+                _id: "$_id",
+                nombre: { $first: "$nombre" },
+                descripcion: { $first: "$descripcion" },
+                Total: { $sum: "$inventory.cantidad" }
+              }
             },
             {
-                $sort: { Total: -1 }
+              $sort: { Total: -1 }
             }
-        ]).toArray();
+          ]).toArray();
         resolve(result);
     })
 };

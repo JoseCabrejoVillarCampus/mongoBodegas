@@ -1,17 +1,40 @@
-import {Router} from 'express';
-import {coneccion} from "../db/atlas.js";
-import {limitGet} from '../limit/config.js';
-import {plainToClass} from 'class-transformer';
-import {DTO} from '../limit/token.js';
+import {
+    Router
+} from 'express';
+import {
+    coneccion
+} from "../db/atlas.js";
+import {
+    limitGet
+} from '../limit/config.js';
+import {
+    plainToClass
+} from 'class-transformer';
+import {
+    DTO
+} from '../limit/token.js';
 import expressQueryBoolean from 'express-query-boolean';
-import {appMiddlewareInventariosVerify,appDTODataInventarios,appDTOParamInventarios} from '../middleware/inventariosmidddleware.js';
-import {processErrors} from '../common/Function.js';
-import {Inventarios} from '../dtocontroller/inventariosdto.js';
-import {ObjectId} from 'mongodb';
+import {
+    appMiddlewareInventariosVerify,
+    appDTODataInventarios,
+    appDTOParamInventarios
+} from '../middleware/inventariosmidddleware.js';
+import { appMiddlewareProductosVerify, appDTODataProductos, appDTOParamProductos } from '../middleware/productosmiddleware.js';
+import {
+    processErrors
+} from '../common/Function.js';
+import {
+    Inventarios
+} from '../dtocontroller/inventariosdto.js';
+import {
+    ObjectId
+} from 'mongodb';
 let storageInventarios = Router();
+import { appMiddlewareRegistroVerify, appDTODataRegistro } from '../middleware/registromiddleware.js';
 
 let db = await coneccion();
 let inventarios = db.collection("inventarios");
+let productos = db.collection("productos");
 
 storageInventarios.use(expressQueryBoolean());
 
@@ -97,91 +120,54 @@ storageInventarios.post('/', limitGet(), appMiddlewareInventariosVerify, appDTOD
         res.send(err);
     }
 });
-storageInventarios.post('/registros', limitGet(), appMiddlewareInventariosVerify, appDTODataInventarios, async (req, res) => {
-    if (!req.rateLimit) return;
-    let data = {
-        ...req.body,
-        created_at: new Date(req.body.created_at),
-        update_at: new Date(req.body.update_at),
-        deleted_at: new Date(req.body.deleted_at)
-    }
+storageInventarios.post('/registros', limitGet(), appMiddlewareRegistroVerify,appDTODataRegistro, async (req, res) => {
+    if(!req.rateLimit) return;
+    const {id_bodega, id_producto, cantidad, created_by } = req.body;
     try {
-        // Insertar o actualizar el inventario
-        var nuevoInventario = {
-            id_bodega: req.body.id_bodega,
-            id_producto: req.body.id_producto,
-            cantidad: req.body.cantidad,
-            created_by: 1,
-            update_by: 1,
-            created_at: "2023-08-16",
-            update_at: "2023-08-16",
-            deleted_at: "",
-        };
-        var filtro = {
-            id_bodega: nuevoInventario.id_bodega,
-            id_producto: nuevoInventario.id_producto,
-        };
-        db.inventarios.updateOne(
-            filtro, {
-                $set: {
-                    id_bodega: nuevoInventario.id_bodega,
-                    id_producto: nuevoInventario.id_producto,
-                    update_by: nuevoInventario.update_by,
-                    update_at: nuevoInventario.update_at,
-                    deleted_at: nuevoInventario.deleted_at,
-                },
-                $inc: {
-                    cantidad: nuevoInventario.cantidad,
-                },
-                $setOnInsert: {
-                    created_by: nuevoInventario.created_by,
-                    created_at: nuevoInventario.created_at,
-                },
-            }, {
-                upsert: true
-            }
-        );
-
-        res.status(201).send("Inventario actualizado o insertado exitosamente.");
+        let result = await inventarios.findOne({ id_bodega: id_bodega, id_producto: id_producto });
+        let data = {...req.body, update_by : null, created_at: new Date(), updated_at: null, deleted_at: null}
+        
+        if (!result) {
+                let NewInven = await inventarios.insertOne(data);
+                res.status(200).send({status: 200, message: "Inventario creado Correctamente"});
+        } else {
+            const cantidadActual = Number(result.cantidad);
+            const cantidadPlus = Number(cantidad) + cantidadActual;
+            inventarios.updateOne({ id_bodega: id_bodega, id_producto: id_producto },
+                { $set: { cantidad: cantidadPlus, update_by: created_by, updated_at: new Date()} });
+            res.status(200).send({status: 200, message: "Cantidad del inventario Actualizado Correctamente"});
+        }
     } catch (error) {
-        const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
-
-        const errorList = processErrors(err, Inventarios);
-
-        res.send(err);
+        errorcontroller(error, res);
     }
 });
 
-storageInventarios.post('/cantbodega', limitGet(), appMiddlewareInventariosVerify, appDTODataInventarios, async (req, res) => {
+storageInventarios.post('/cantbodega', limitGet(), appMiddlewareProductosVerify, appDTODataProductos, async (req, res) => {
     if (!req.rateLimit) return;
-    let data = {
-        ...req.body,
-        created_at: new Date(req.body.created_at),
-        update_at: new Date(req.body.update_at),
-        deleted_at: new Date(req.body.deleted_at)
-    }
-    try {
-        let result = await inventarios.insertOne(data);
-        const nuevoProductoId = result.insertedId;
-
-        db.inventarios.insertOne({
-            id_bodega: 1,
+    let data = {...req.body, created_at: new Date(req.body.created_at), update_at: new Date(req.body.update_at), deleted_at: new Date(req.body.deleted_at)}
+    console.log(req.body);
+    try{
+        let result = await productos.insertOne(data);
+        const nuevoProductoId = req.body.idProducto;
+        console.log(nuevoProductoId);
+        await inventarios.insertOne({
+            id_bodega: 1, 
             id_producto: nuevoProductoId,
-            cantidad: 10,
+            cantidad: 10, 
             created_by: 1,
             update_by: 1,
-            created_at: "2023-08-16",
-            update_at: "2023-08-16",
-            deleted_at: "2023-08-16",
+            created_at: new Date(),
+            update_at: new Date(),
+            deleted_at: new Date(),
         });
 
-        res.status(201).send(result);
-    } catch (err) {
-        /* const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
+        res.send("se guardaron los datos correctamente!")
+    } catch (error){
+        // const err = plainToClass(DTO("mongo").class, error.errInfo.details.schemaRulesNotSatisfied)
 
-        const errorList = processErrors(err, Inventarios); */
-
-        res.send(err);
+        // const errorList = processErrors(err, Productos);
+        console.log(error)
+        res.sendStatus(500)
     }
 });
 
@@ -189,26 +175,33 @@ storageInventarios.put("/:id?", limitGet(), appMiddlewareInventariosVerify, appD
     try {
         if (!req.rateLimit) {
             throw new Error("Rate limit not satisfied.");
-            }   
-            const parsedDates = ['created_at', 'update_at', 'deleted_at'];
-            const data = {...req.body};
-            for (const dateField of parsedDates) {
-                if (data[dateField]) {
-                    data[dateField] = new Date(data[dateField]);
-                }
+        }
+        const parsedDates = ['created_at', 'update_at', 'deleted_at'];
+        const data = {
+            ...req.body
+        };
+        for (const dateField of parsedDates) {
+            if (data[dateField]) {
+                data[dateField] = new Date(data[dateField]);
             }
-            if (!req.params.id) {
-                return res.status(400).send({ message: "Para realizar el método update es necesario ingresar el id del usuario a modificar." });
-            }
-            const result = await inventarios.updateOne(
-                { "_id": new ObjectId(req.params.id) },
-                { $set: data }
-            );
-            res.send(result);
-            } catch (error) {
-                console.error("An error occurred:", error);
-            res.status(500).send({ message: "Error inesperado en el servidor." });
-            }
+        }
+        if (!req.params.id) {
+            return res.status(400).send({
+                message: "Para realizar el método update es necesario ingresar el id del usuario a modificar."
+            });
+        }
+        const result = await inventarios.updateOne({
+            "_id": new ObjectId(req.params.id)
+        }, {
+            $set: data
+        });
+        res.send(result);
+    } catch (error) {
+        console.error("An error occurred:", error);
+        res.status(500).send({
+            message: "Error inesperado en el servidor."
+        });
+    }
 });
 storageInventarios.delete("/:id?", limitGet(), appMiddlewareInventariosVerify, appDTOParamInventarios, async (req, res) => {
     if (!req.rateLimit) return;
